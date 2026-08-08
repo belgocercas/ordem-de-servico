@@ -205,6 +205,7 @@
       <div class="grid2">
         <div class="campo"><label>Nome</label><input type="text" id="clienteNome"></div>
         <div class="campo"><label>CPF / CNPJ</label><input type="text" id="clienteDoc"></div>
+        <div class="campo full"><label>Nome do responsável</label><input type="text" id="clienteResponsavel"></div>
         <div class="campo full"><label>Endereço</label><input type="text" id="clienteEndereco"></div>
         <div class="campo"><label>Ponto de referência / complemento</label><input type="text" id="clienteRef"></div>
         <div class="campo"><label>Telefone</label><input type="text" id="clienteTelefone"></div>
@@ -253,8 +254,8 @@
     </section>
 
     <section>
-      <h2>Orçamento</h2>
-      <textarea id="orcamento" rows="3" placeholder="Observações / valor do orçamento..."></textarea>
+      <h2>Observação</h2>
+      <textarea id="orcamento" rows="3" placeholder="Observações..."></textarea>
     </section>
 
     <section class="assinatura">
@@ -316,7 +317,7 @@
     }
     document.getElementById('osNumero').value = localStorage.getItem(NUMERO_KEY) || 'OS-0001';
     document.getElementById('osData').value = todayISO();
-    ['clienteNome','clienteDoc','clienteEndereco','clienteRef','clienteTelefone',
+    ['clienteNome','clienteDoc','clienteResponsavel','clienteEndereco','clienteRef','clienteTelefone',
      'descricaoServico','previsaoInicio','previsaoConclusao','orcamento',
      'aprovadoPor','dataAprovacao'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('prioridade').value = 'Normal';
