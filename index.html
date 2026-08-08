@@ -133,6 +133,7 @@
   table th, table td { border: 1px solid #cbd5e1; padding: 6px; text-align: left; }
   table th { background: var(--brand-tint); font-size: 11px; text-transform: uppercase; color: var(--brand-dark); }
   table td input { border: none; padding: 4px; font-size: 13px; width: 100%; }
+  table td select { border: none; padding: 4px; font-size: 13px; width: 100%; font-family: inherit; }
   .btn-remove {
     background: #fee2e2; color: #b91c1c; border: none; border-radius: 4px;
     width: 26px; height: 26px; cursor: pointer; font-size: 14px; line-height: 1;
@@ -206,7 +207,7 @@
         <div class="campo"><label>Nome</label><input type="text" id="clienteNome"></div>
         <div class="campo"><label>CPF / CNPJ</label><input type="text" id="clienteDoc"></div>
         <div class="campo full"><label>Nome do responsável</label><input type="text" id="clienteResponsavel"></div>
-        <div class="campo full"><label>Endereço</label><input type="text" id="clienteEndereco"></div>
+        <div class="campo full"><label>Endereço da obra</label><input type="text" id="clienteEndereco"></div>
         <div class="campo"><label>Ponto de referência / complemento</label><input type="text" id="clienteRef"></div>
         <div class="campo"><label>Telefone</label><input type="text" id="clienteTelefone"></div>
       </div>
@@ -215,7 +216,7 @@
     <section>
       <h2>Dados do Serviço</h2>
       <div class="grid2">
-        <div class="campo">
+        <div class="campo" style="grid-column: 1; grid-row: 1;">
           <label>Prioridade</label>
           <select id="prioridade">
             <option>Baixa</option>
@@ -223,8 +224,8 @@
             <option>Urgente</option>
           </select>
         </div>
-        <div class="campo"><label>Previsão de início</label><input type="date" id="previsaoInicio"></div>
-        <div class="campo"><label>Previsão de conclusão</label><input type="date" id="previsaoConclusao"></div>
+        <div class="campo" style="grid-column: 1; grid-row: 2;"><label>Previsão de início</label><input type="date" id="previsaoInicio"></div>
+        <div class="campo" style="grid-column: 2; grid-row: 2;"><label>Previsão de conclusão</label><input type="date" id="previsaoConclusao"></div>
         <div class="campo full">
           <label>Descrição do serviço a ser executado</label>
           <textarea id="descricaoServico" rows="4"></textarea>
@@ -239,6 +240,7 @@
           <tr>
             <th>Descrição</th>
             <th style="width:120px">Quantidade</th>
+            <th style="width:100px">Unidade</th>
             <th class="no-print" style="width:40px"></th>
           </tr>
         </thead>
@@ -246,6 +248,14 @@
           <tr>
             <td><input type="text" placeholder="Descrição do produto/material"></td>
             <td><input type="text" placeholder="Qtd"></td>
+            <td>
+              <select>
+                <option value="" disabled selected>Selecione...</option>
+                <option>M2</option>
+                <option>MT</option>
+                <option>PC</option>
+              </select>
+            </td>
             <td class="no-print"><button class="btn-remove" onclick="removeRow(this)">×</button></td>
           </tr>
         </tbody>
@@ -259,8 +269,18 @@
     </section>
 
     <section class="assinatura">
-      <div class="campo"><label>Aprovado por</label><input type="text" id="aprovadoPor"></div>
-      <div class="campo"><label>Data</label><input type="date" id="dataAprovacao"></div>
+      <div class="campo">
+        <label>Responsável</label>
+        <select id="aprovadoPor">
+          <option value="" disabled selected>Selecione...</option>
+          <option>Pedro dos Anjos</option>
+          <option>Isaac Luiz</option>
+          <option>Yure Silva</option>
+          <option>Leandro Duarte</option>
+          <option>Cleobaldo Aragão</option>
+        </select>
+      </div>
+      <div class="campo"><label>Data</label><input type="date" id="dataAprovacao" readonly></div>
     </section>
 
   </div>
@@ -278,6 +298,14 @@
     tr.innerHTML = `
       <td><input type="text" placeholder="Descrição do produto/material"></td>
       <td><input type="text" placeholder="Qtd"></td>
+      <td>
+        <select>
+          <option value="" disabled selected>Selecione...</option>
+          <option>M2</option>
+          <option>MT</option>
+          <option>PC</option>
+        </select>
+      </td>
       <td class="no-print"><button class="btn-remove" onclick="removeRow(this)">×</button></td>
     `;
     tbody.appendChild(tr);
@@ -287,6 +315,7 @@
     const tbody = document.getElementById('produtosBody');
     if (tbody.rows.length <= 1) {
       btn.closest('tr').querySelectorAll('input').forEach(i => i.value = '');
+      btn.closest('tr').querySelectorAll('select').forEach(s => s.selectedIndex = 0);
       return;
     }
     btn.closest('tr').remove();
@@ -307,6 +336,7 @@
     const stored = localStorage.getItem(NUMERO_KEY);
     document.getElementById('osNumero').value = stored || 'OS-0001';
     document.getElementById('osData').value = todayISO();
+    document.getElementById('dataAprovacao').value = todayISO();
   }
 
   function resetForNewOrder(advance) {
@@ -319,13 +349,22 @@
     document.getElementById('osData').value = todayISO();
     ['clienteNome','clienteDoc','clienteResponsavel','clienteEndereco','clienteRef','clienteTelefone',
      'descricaoServico','previsaoInicio','previsaoConclusao','orcamento',
-     'aprovadoPor','dataAprovacao'].forEach(id => document.getElementById(id).value = '');
+     'aprovadoPor'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('prioridade').value = 'Normal';
+    document.getElementById('dataAprovacao').value = todayISO();
     const tbody = document.getElementById('produtosBody');
     tbody.innerHTML = `
       <tr>
         <td><input type="text" placeholder="Descrição do produto/material"></td>
         <td><input type="text" placeholder="Qtd"></td>
+        <td>
+          <select>
+            <option value="" disabled selected>Selecione...</option>
+            <option>M2</option>
+            <option>MT</option>
+            <option>PC</option>
+          </select>
+        </td>
         <td class="no-print"><button class="btn-remove" onclick="removeRow(this)">×</button></td>
       </tr>`;
   }
